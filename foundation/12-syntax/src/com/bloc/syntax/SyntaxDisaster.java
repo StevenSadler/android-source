@@ -13,6 +13,8 @@ public class SyntaxDisaster extends Object {
 			int x = 5;
 		}
 		int syntaxIsFun = 5;
+
+		
 		// The following line prints stuff out, I promise
 		System.out.println("If you can see this message, you've won!");
 	}
