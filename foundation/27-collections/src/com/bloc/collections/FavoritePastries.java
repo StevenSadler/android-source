@@ -24,12 +24,19 @@ public class FavoritePastries {
 	 *	Use a HashMap to store the relationship
 	 *	between rating and pastry: HashMap<Integer, List<Pastry>>
 	/************************************************/
+	private static int MIN_RATING = 1;
+	private static int MAX_RATING = 5;
 
-
+	private HashMap<Integer, List<Pastry>> mStarList;
+	
 	public FavoritePastries() {
 		/************************************************
  	 	 *	WORK HERE
 		/************************************************/
+		mStarList = new HashMap<Integer, List<Pastry>>();
+		for (int i = MIN_RATING; i <= MAX_RATING; i++) {
+			mStarList.put(i, new LinkedList<Pastry>());
+		}
 	}
 
 	/* 
@@ -51,6 +58,18 @@ public class FavoritePastries {
 		/************************************************
  	 	 *	WORK HERE
 		/************************************************/
+
+		if(rating < MIN_RATING || rating > MAX_RATING) {
+			// TODO: throw exception if rating is not in range
+		}
+
+		int oldRating = getRatingForPastry(pastry);
+		if (oldRating != rating) {
+			if (oldRating != -1) {
+				mStarList.get(oldRating).remove(pastry);
+			}
+			mStarList.get(rating).add(pastry);
+		}
 	}
 
 	/* 
@@ -69,6 +88,11 @@ public class FavoritePastries {
 		/************************************************
  	 	 *	WORK HERE, you must modify the return value
 		/************************************************/
+		int rating = getRatingForPastry(pastry);
+		if (rating != -1) {
+			mStarList.get(rating).remove(pastry);
+			return true;
+		}
 		return false;
 	}
 
@@ -90,6 +114,11 @@ public class FavoritePastries {
 		/************************************************
  	 	 *	WORK HERE, you must modify the return value
 		/************************************************/
+		for (Integer rating : mStarList.keySet()) {
+			if (mStarList.get(rating).contains(pastry)) {
+				return rating;
+			}
+		}
 		return -1;
 	}
 
@@ -113,7 +142,10 @@ public class FavoritePastries {
 		/************************************************
  	 	 *	WORK HERE, you must modify the return value
 		/************************************************/
-		return null;
+		if (mStarList.containsKey(rating)) {
+			return mStarList.get(rating);
+		}
+		return new LinkedList<Pastry>();
 	}
 
 }
