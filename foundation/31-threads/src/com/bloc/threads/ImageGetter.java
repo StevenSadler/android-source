@@ -23,6 +23,11 @@ public class ImageGetter extends Thread {
 	public ImageGetter(String url, boolean openWhenCompleted) {
 		mURL = url;
 		mOpenWhenCompleted = openWhenCompleted;
+
+		File existingImage = new File("google_logo.png");
+		if (existingImage.exists()) {
+			existingImage.delete();
+		}
 	}
 	/************************************************
  	 *	ASSIGNMENT:
@@ -34,10 +39,6 @@ public class ImageGetter extends Thread {
 	@Override
 	public void run() {
 		try {
-			File existingImage = new File("google_logo.png");
-			if (existingImage.exists()) {
-				existingImage.delete();
-			}
 			URL url = new URL(mURL);
 			BufferedImage bufferedImage = ImageIO.read(url);
 			File outputfile = new File("google_logo.png");
