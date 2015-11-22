@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 public class ImageGetter extends Thread {
 
-	private BufferedImage mBufferedImage;
+	private String mURL;
 	private boolean mOpenWhenCompleted;
 
 	/*
@@ -21,20 +21,8 @@ public class ImageGetter extends Thread {
 	 *		  as soon it is downloaded, `false` otherwise
 	 */
 	public ImageGetter(String url, boolean openWhenCompleted) {
-		try {
-			mOpenWhenCompleted = openWhenCompleted;
-			File existingImage = new File("google_logo.png");
-			if (existingImage.exists()) {
-				existingImage.delete();
-			}
-			mBufferedImage = ImageIO.read(new URL(url));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		mURL = url;
+		mOpenWhenCompleted = openWhenCompleted;
 	}
 	/************************************************
  	 *	ASSIGNMENT:
@@ -45,22 +33,29 @@ public class ImageGetter extends Thread {
 
 	@Override
 	public void run() {
-		if (mOpenWhenCompleted) {
-			try {
-				File outputfile = new File("google_logo.png");
-				ImageIO.write(mBufferedImage, "png", outputfile);
+		try {
+			File existingImage = new File("google_logo.png");
+			if (existingImage.exists()) {
+				existingImage.delete();
+			}
+			URL url = new URL(mURL);
+			BufferedImage bufferedImage = ImageIO.read(url);
+			File outputfile = new File("google_logo.png");
+			ImageIO.write(bufferedImage, "png", outputfile);
+			if (mOpenWhenCompleted) {
 				if ("/".equals(System.getProperties().getProperty("file.separator"))) {
 					Runtime.getRuntime().exec("open google_logo.png");
 				} else {
-					Runtime.getRuntime().exec("google_logo.png");
+					String command = "rundll32 url.dll,FileProtocolHandler \""+ outputfile.getAbsolutePath() +"\"";
+					Runtime.getRuntime().exec(command);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 		/************************************************
  		 *	ASSIGNMENT:
